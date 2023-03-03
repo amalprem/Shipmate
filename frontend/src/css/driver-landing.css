@@ -1,0 +1,17 @@
+.order-container {
+  display: flex;
+  flex-direction: column;
+  border: solid 2px #4f38ee;
+  padding: 2rem;
+  margin: 4rem;
+  max-height: 50rem;
+  max-width: 50rem;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 200 !important;
+  font-size: 1.5rem;
+}
+
+.driver-heading {
+  font-family: "Inter", sans-serif !important;
+  text-align: center;
+}

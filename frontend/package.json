@@ -1,0 +1,65 @@
+{
+  "name": "nile",
+  "version": "0.1.0",
+  "private": true,
+  "proxy": "http://localhost:5000/",
+  "dependencies": {
+    "@ant-design/icons": "^4.7.0",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "@mui/icons-material": "^5.10.9",
+    "@mui/material": "^5.10.11",
+    "@mui/styles": "^5.10.10",
+    "@react-google-maps/api": "^2.17.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
+    "framer-motion": "^7.6.1",
+    "gapi-script": "^1.2.0",
+    "google-map-react": "^2.2.0",
+    "jwt-decode": "^3.1.2",
+    "leaflet": "^1.6.0",
+    "mapbox-gl": "^2.10.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-dropdown": "^1.11.0",
+    "react-google-login": "^5.2.2",
+    "react-icons": "^4.6.0",
+    "react-leaflet": "^3.2.0",
+    "react-map-gl": "^7.0.19",
+    "react-navigation": "^4.4.4",
+    "react-router": "^6.4.1",
+    "react-router-dom": "^6.4.1",
+    "react-scripts": "5.0.1",
+    "react-toastify": "^9.0.8",
+    "stream-chat": "^8.1.1",
+    "stream-chat-react": "^10.4.0",
+    "talkjs": "^0.15.5",
+    "use-local-storage": "^2.3.6",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3"
+  }
+}

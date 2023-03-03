@@ -1,0 +1,16 @@
+.payment-container{
+    margin: 2rem;
+    border: solid 2px #4f38ee;
+    padding: 2rem;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.textfield {
+    padding-bottom: 2rem !important;
+    width: 100%;
+}
+
+.select{
+    margin-bottom: 2rem;
+    width: 7rem;
+}

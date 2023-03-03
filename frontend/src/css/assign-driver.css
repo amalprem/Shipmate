@@ -1,0 +1,19 @@
+.assign-driver-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.assign-container {
+  display: flex;
+  flex-direction: row;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.assign-button {
+  margin: unset !important;
+  font-family: "Inter", sans-serif !important;
+  background-color: #5038ee !important;
+  line-height: 1.5rem !important;
+  align-self: center;
+}

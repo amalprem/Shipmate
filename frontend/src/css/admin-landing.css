@@ -1,0 +1,12 @@
+.welcome-message {
+  color: red;
+}
+
+.landing-container {
+  background-color: white;
+  margin: 2rem;
+}
+
+.task-container {
+  line-height: 2rem;
+}

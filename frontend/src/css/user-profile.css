@@ -1,0 +1,25 @@
+.boxstyles {
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+  position: absolute;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: 200px;
+  border-radius: 10px;
+}
+
+.profile-heading {
+  justify-content: center;
+  padding-left: 7rem;
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}

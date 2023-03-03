@@ -1,0 +1,20 @@
+.admins {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+}
+
+.adminName {
+  width: 270px;
+  flex-direction: column;
+
+  margin: 2rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  color: #000;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}

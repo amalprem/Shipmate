@@ -1,0 +1,71 @@
+.google-signin {
+  display: flex;
+  justify-content: center;
+  width: 20rem;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-bottom: 1rem;
+}
+
+.signin-container {
+  margin: 2rem;
+  display: flex;
+}
+
+.css-binzgt {
+  margin-top: unset !important;
+}
+
+/* .css-nzinn5-MuiContainer-root {
+  max-width: 35rem !important;
+  margin-left: unset !important;
+  padding-left: unset !important;
+  padding-right: unset !important;
+  border: solid 2px #5038ee;
+  margin: 4rem;
+  font-family: "Inter", sans-serif !important;
+  font-weight: 400 !important;
+} */
+
+.signin-title {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 2rem;
+}
+
+.text-field-container {
+  font-family: "Inter", sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 1rem;
+  padding-top: 2rem;
+}
+
+label,
+span {
+  font-family: "Inter", sans-serif !important;
+}
+
+.signin-button {
+  margin: unset !important;
+  font-family: "Inter", sans-serif !important;
+  background-color: #5038ee !important;
+  line-height: 2.75rem !important;
+  width: 15rem !important;
+  align-self: center;
+  font-weight: 300 !important;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
+.styles {
+  display: flex;
+  flex-direction: column;
+}
+
+.already {
+  padding-top: 1rem;
+}

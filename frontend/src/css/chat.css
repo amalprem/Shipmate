@@ -1,0 +1,53 @@
+.chat-container {
+  display: flex;
+}
+.message {
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  position: relative;
+  margin-left: 5rem;
+  margin-top: 2rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+}
+.seconddiv {
+  flex: 1;
+  margin-left: 10rem;
+  margin-top: 2rem;
+  width: 50%;
+  justify-items: center;
+}
+.sender {
+  display: flex;
+  justify-content: right;
+  width: fit-content;
+  align-items: right;
+  line-height: 2rem;
+  margin-left: 70%;
+  margin-bottom: 1rem;
+  /* box-shadow: 0 0 25px green; */
+  border: 3px solid green;
+  border-radius: 15px;
+}
+.name {
+  float: right;
+}
+.message {
+  float: right;
+}
+
+.reply {
+  display: flex;
+  justify-content: right;
+  width: fit-content;
+  align-items: right;
+  line-height: 2rem;
+  margin-left: 10%;
+  margin-bottom: 1rem;
+  /* box-shadow: 0 0 25px green; */
+  border: 3px solid rgb(21, 0, 128);
+  border-radius: 15px;
+}

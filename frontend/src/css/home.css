@@ -1,0 +1,47 @@
+img {
+  width: 1000px;
+  height: 600px;
+}
+
+.nile {
+  font-size: 2rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 2rem 0rem;
+}
+
+.search-container {
+  top: 50px;
+  left: 430px;
+}
+
+#theButton {
+  position: absolute;
+  top: 80px;
+  left: 500px;
+  border: solid 1px green;
+  height: 40px;
+  line-height: 22px;
+  vertical-align: middle
+}
+
+.tabs {
+  display: flex;
+  top: 20rem;
+  left: 37rem;
+}
+
+.manage {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+}
+
+.container {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 200;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}

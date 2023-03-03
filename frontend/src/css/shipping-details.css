@@ -1,0 +1,12 @@
+.shiiping-container {
+  line-height: 1rem;
+  margin: 4rem;
+  /* margin-top: 5rem; */
+}
+
+.shipping-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+}
