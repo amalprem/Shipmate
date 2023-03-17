@@ -60,7 +60,7 @@ const SignIn = () => {
   }, []);
 
   useEffect(() => {
-    const data = window.localStorage.getItem("logged_in_key");
+    const data = window.localStorage.getItem("isLoggedIn");
     if (data !== undefined) setIsLoggedIn(JSON.parse(data));
     console.log(data);
   }, []);
@@ -91,41 +91,30 @@ const SignIn = () => {
         password: data.get("password"),
       })
       .then((response) => {
-        console.log(response);
+        console.log(response)
         if (response.data["response"] === 200) {
           alert("Sign In Successfully and the role is" + response.data["role"]);
           setResponse(response.data);
-          setOtpButton(true);
-        } else {
+          alert("Login successful");
+          console.log(response.data["Role"])
+          window.localStorage.setItem("isLoggedIn", true);
+          window.localStorage.setItem("role", response.data["role"]);
+          window.localStorage.setItem("email", response.data["Username"]);
+          window.localStorage.setItem("id", response.data["UserId"]);
+          window.localStorage.setItem("name", response.data["FirstName"]);
+          navigate("/landing-page");
+          console.log("In validate otp")
+          
+        } else if (response.data["response"]===207) {
+          alert(response.data["message"])
+        }
+         else if (response.data["response"]===201) {
           alert(response.data["message"]);
         }
       })
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const validateOtp = (event) => {
-    console.log(event);
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log(parseInt(data.get("otp")));
-    console.log(data.get("email"));
-    console.log(response);
-    if (
-      response["otp"] === parseInt(data.get("otp")) &&
-      response["username"] === data.get("email")
-    ) {
-      alert("Login successful");
-      window.localStorage.setItem("isLoggedIn", true);
-      window.localStorage.setItem("role", response["role"]);
-      window.localStorage.setItem("email", response["username"]);
-      window.localStorage.setItem("id", response["UserId"]);
-      window.localStorage.setItem("name", response["FirstName"]);
-      navigate("/landing-page");
-    } else {
-      alert("OTP is wrong");
-    }
   };
 
   return (
@@ -146,7 +135,7 @@ const SignIn = () => {
               <div className="text-field-container">
                 <Box
                   component="form"
-                  onSubmit={otpButton ? validateOtp : handleSubmit}
+                  onSubmit={handleSubmit}
                   noValidate
                   sx={{ mt: 1 }}
                 >

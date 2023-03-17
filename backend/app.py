@@ -18,11 +18,18 @@ from geopy.geocoders import Nominatim
 import certifi
 import ssl
 import string
+from pymongo import MongoClient
 
 load_dotenv()
 api = Flask(__name__)
 cors = CORS(api)
 mysql = MySQL(cursorclass=DictCursor)
+client = MongoClient('mongodb+srv://bkhope:aaaaaaaa@cluster0.fr45hjl.mongodb.net/test')
+db = client['delivery']
+
+for x in db.myMovies.find().sort("year"):
+    print(x)
+# print(collection)
 
 #mysql configuration
 api.config['MYSQL_DATABASE_USER'] = os.getenv('MYSQL_DATABASE_USER')
@@ -102,70 +109,119 @@ def my_profile():
     }
     return response_body
 
-
-@api.route('/register',methods =['GET', 'POST'])
-def register():
-    # print("Here")
-    try:
-        if request.method == 'POST':
-            timestamp = datetime.now()
-            userid = generateUserId(request.json['firstname'],request.json['lastname'])
-            conn,cursor = db_connect()
-            cursor.execute("SELECT * FROM USERS where Username = %s",(request.json['email']))
-            data = cursor.fetchall()
-            if data:
-                conn.close()
-                return jsonify({'response':205,'message': 'User already exists. Please login!'}),205
-            else:
-                # print(username,password)
-                cursor.execute("INSERT INTO USERS(FirstName,LastName,Username,Password,Role,TimeStamp,UserId,SecurityQuestion,Answer) VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s)",
-                (request.json['firstname'],request.json['lastname'],request.json['email'],request.json['password'],request.json['role'],timestamp,userid,request.json['securityquestion'],request.json['answer']))
-                if request.json['role'] in ('Admin', 'Driver'):
-                    cursor.execute("INSERT INTO EMPLOYEES(FullName,Role,email,Available) VALUES(%s,%s,%s,%s)",(request.json['firstname']+" "+request.json['lastname'], request.json['role'],request.json['email'],"Yes"))
-                cursor.close()
-                message = "<p>"+"Dear "+request.json['firstname']+","+"<br><br>"+"Welcome to Nile Delivery Service!. Your Username/Userid is <b>"+userid+"</b></p>"
-                send_email(message,request.json['email'],"Welcome!")
-                conn.close()
-                return jsonify({'response':200,'userid':userid,'message' : 'User registered successfully'}),200
-    except Exception as e:
-        return jsonify(e)
-
-
-@api.route('/login',methods = ['POST'])
+@api.route('/login', methods=['POST'])
 def login():
-    try:
+    try:        
         if request.method == 'POST':
             username = request.json['email']
             password = request.json['password']
-            conn,cursor = db_connect()
-            cursor.execute("SELECT * FROM USERS where username = %s or userid = %s",(username,username))
-            data = cursor.fetchall()
-            # print(data)
+            db = client.delivery  # replace with your MongoDB database name
+            collection = db.register  # replace with your MongoDB collection name
+            data = collection.find_one({'Username': username, 'Password': password})
             if data:
-                cursor.execute("SELECT * FROM USERS where (username = %s OR userid = %s) AND password = %s",(username,username,password))
-                data = cursor.fetchall()
-                cursor.close()
+                data = collection.find_one({'Username': username, 'Password': password})
+                # print(data)
                 if data:
-                    data =data.pop()
                     data['role'] = data['Role']
                     username = data['Username']
                     data['msg'] = "User exists"
-                    data['username'] = username
+                    data['Username'] = username
                     data['response'] = 200
-                    otp = generate_otp()
-                    data['otp'] = otp
-                    message = "<p>"+"Dear "+username+","+"<br><br>"+"Welcome to Nile Delivery Service!. Your OTP for login is <b>"+str(otp)+"</b></p>"
-                    send_email(message,username,"Login OTP!")
-                    conn.close()
-                    return data
-                else:
-                    conn.close()
-                    return jsonify({'response':205,'message': 'Password is Wrong'})
+                    keysToExtract = list(data.keys())
+                    keysToExtract = keysToExtract[1:]
+                    # print(keysToExtract)
+                    extracted_dict = {key: data[key] for key in keysToExtract if key in data}
+                    print(extracted_dict)
+                    return extracted_dict
+                # else:
+                #     return jsonify({'response': 401, 'message': 'Password is Wrong'}), 401
             else:
-                conn.close()
-                return jsonify({'response':205,'message':'User does not exist. Please register!'})
+                data = collection.find_one({'Username': username})
+                if data:
+                    return jsonify({'response': 207, 'message': 'Password is Wrong'}), 207
+                else:
+                    return jsonify({'response': 201, 'message': 'User does not exist. Please register!'}), 201
     except Exception as e:
         return jsonify(e)
+
+# @api.route('/register',methods =['GET', 'POST'])
+# def register():
+#     # print("Here")
+#     try:
+#         if request.method == 'POST':
+#             timestamp = datetime.now()
+#             userid = generateUserId(request.json['firstname'],request.json['lastname'])
+#             conn,cursor = db_connect()
+#             cursor.execute("SELECT * FROM USERS where Username = %s",(request.json['email']))
+#             data = cursor.fetchall()
+#             if data:
+#                 conn.close()
+#                 return jsonify({'response':205,'message': 'User already exists. Please login!'}),205
+#             else:
+#                 # print(username,password)
+#                 cursor.execute("INSERT INTO USERS(FirstName,LastName,Username,Password,Role,TimeStamp,UserId,SecurityQuestion,Answer) VALUES(%s, %s,%s,%s,%s,%s,%s,%s,%s)",
+#                 (request.json['firstname'],request.json['lastname'],request.json['email'],request.json['password'],request.json['role'],timestamp,userid,request.json['securityquestion'],request.json['answer']))
+#                 if request.json['role'] in ('Admin', 'Driver'):
+#                     cursor.execute("INSERT INTO EMPLOYEES(FullName,Role,email,Available) VALUES(%s,%s,%s,%s)",(request.json['firstname']+" "+request.json['lastname'], request.json['role'],request.json['email'],"Yes"))
+#                 cursor.close()
+#                 message = "<p>"+"Dear "+request.json['firstname']+","+"<br><br>"+"Welcome to Nile Delivery Service!. Your Username/Userid is <b>"+userid+"</b></p>"
+#                 send_email(message,request.json['email'],"Welcome!")
+#                 conn.close()
+#                 return jsonify({'response':200,'userid':userid,'message' : 'User registered successfully'}),200
+#     except Exception as e:
+#         return jsonify(e)
+
+@api.route('/register', methods=['POST'])
+def register():
+    try:
+        # Connect to the MongoDB database
+        users_collection = db.register
+        employees_collection = db.employees
+
+        # Check if the user already exists
+        email = request.json['email']
+        print("Email is",email)
+        user = users_collection.find_one({"Username": email})
+        print(user)
+        if user:
+            client.close()
+            return jsonify({'response': 205, 'message': 'User already exists. Please login!'}), 205
+
+        # Insert the new user into the users collection
+        timestamp = datetime.now()
+        userid = generateUserId(request.json['firstname'], request.json['lastname'])
+        user_doc = {
+            "FirstName": request.json['firstname'],
+            "LastName": request.json['lastname'],
+            "Username": email,
+            "Password": request.json['password'],
+            "Role": request.json['role'],
+            "TimeStamp": timestamp,
+            "UserId": userid,
+            "SecurityQuestion": request.json['securityquestion'],
+            "Answer": request.json['answer']
+        }
+        users_collection.insert_one(user_doc)
+        # If the user is an admin or driver, insert them into the employees collection
+        if request.json['role'] in ('Admin', 'Driver'):
+            employee_doc = {
+                "FullName": request.json['firstname'] + " " + request.json['lastname'],
+                "Role": request.json['role'],
+                "email": email,
+                "Available": "Yes"
+            }
+            employees_collection.insert_one(employee_doc)
+
+        # Send a welcome email to the new user
+        # message = "<p>" + "Dear " + request.json['firstname'] + "," + "<br><br>" + "Welcome to Nile Delivery Service!. Your Username/Userid is <b>" + userid + "</b></p>"
+        # send_email(message, email, "Welcome!")
+
+        # client.close()
+        return jsonify({'response': 200, 'userid': userid, 'message': 'User registered successfully'}), 200
+
+    except Exception as e:
+        return jsonify(e)
+
 
 @api.route('/forgotpassword/<string:username>',methods = ['GET','POST'])
 def forgotpassword(username):

@@ -27,12 +27,19 @@ export default function SignUp() {
       securityquestion: data.get("questions"),
       answer: data.get("securityAnswer"),
     });
-    if (response.status === 200) {
+    console.log("Response is",response)
+    if(response.status===205) {
+      alert("User Already Exists")
+    }
+    else {
       alert("User Registered Successfully");
       navigate("/SignIn");
-    } else {
-      alert(response.data["message"]);
     }
+    // if (response.status === 200) {
+      
+    // } else {
+    //   alert(response.data["message"]);
+    // }
 
     // axios
     //   .post("http://localhost:5000/register", {
@@ -63,7 +70,6 @@ export default function SignUp() {
     if (!data.get("email").match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i)) {
       alert("invalid email");
     }
-    console.log("data is", data);
     console.log({
       email: data.get("email"),
       password: data.get("password"),
