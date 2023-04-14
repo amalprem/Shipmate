@@ -85,7 +85,8 @@ create TABLE `NILE`.`Orders` (
 `Review` longtext,
 `DeliveryDriver` varchar(255),
 `Status` varchar(255),
-`DeliveryHours` FLOAT
+`DeliveryHours` FLOAT,
+`Username` varchar(255)
 );
 
 CREATE TABLE `NILE`.`Shipment` (

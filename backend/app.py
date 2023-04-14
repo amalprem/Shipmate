@@ -1,7 +1,7 @@
-from crypt import methods
+# from crypt import methods
 import json
 from sqlite3 import Cursor
-from crypt import methods
+# from crypt import methods
 from email import message
 from unittest import result
 from flask_mail import Mail, Message
@@ -19,12 +19,13 @@ import certifi
 import ssl
 import string
 from pymongo import MongoClient
+from bson import json_util
 
 load_dotenv()
 api = Flask(__name__)
 cors = CORS(api)
 mysql = MySQL(cursorclass=DictCursor)
-client = MongoClient('mongodb+srv://bkhope:aaaaaaaa@cluster0.fr45hjl.mongodb.net/test')
+client = MongoClient('mongodb+srv://bkhope:abcdefgh@cluster0.fr45hjl.mongodb.net/test', tlsCAFile=certifi.where())
 db = client['delivery']
 
 for x in db.myMovies.find().sort("year"):
@@ -116,7 +117,7 @@ def login():
             username = request.json['email']
             password = request.json['password']
             db = client.delivery  # replace with your MongoDB database name
-            collection = db.register  # replace with your MongoDB collection name
+            collection = db.users  # replace with your MongoDB collection name
             data = collection.find_one({'Username': username, 'Password': password})
             if data:
                 data = collection.find_one({'Username': username, 'Password': password})
@@ -180,9 +181,7 @@ def register():
 
         # Check if the user already exists
         email = request.json['email']
-        print("Email is",email)
         user = users_collection.find_one({"Username": email})
-        print(user)
         if user:
             client.close()
             return jsonify({'response': 205, 'message': 'User already exists. Please login!'}), 205
@@ -223,67 +222,93 @@ def register():
         return jsonify(e)
 
 
+# @api.route('/forgotpassword/<string:username>',methods = ['GET','POST'])
+# def forgotpassword(username):
+    # if request.method == 'GET':
+    #     conn,cursor = db_connect()
+    #     cursor.execute("SELECT SecurityQuestion from USERS where username = %s OR userid = %s",(username,username))
+    #     data = cursor.fetchall()
+    #     cursor.close()
+    #     if data:
+    #         result = {}
+    #         for row in data:
+    #             result['SecurityQuestion'] = row['SecurityQuestion']
+    #         result['username'] = username
+    #         result['response'] = 200
+    #         conn.close()
+    #         return result
+    #     else:
+    #         conn.close()
+    #         return jsonify({'response':205,'username':username,'msg':'User not exists'})
+    # elif request.method == 'POST':
+    #     question = request.json['question']
+    #     answer = request.json['answer']
+    #     conn,cursor = db_connect()
+    #     cursor.execute("SELECT * from USERS where username = %s OR userid = %s",(username,username))
+    #     data = cursor.fetchall()
+    #     if data:
+    #         cursor.execute("SELECT * from USERS where (username = %s OR userid = %s) and SecurityQuestion =%s and Answer=%s",(username,username,question,answer))
+    #         data = cursor.fetchall()
+    #         if data:
+    #             conn.close()
+    #             return jsonify({'response':200,'msg':'Answer is correct'})  
+    #         else:
+    #             conn.close()
+    #             return jsonify({'response':205,'msg':'Answer is incorrect'})
+    #     else:
+    #         conn.close()
+    #         return jsonify({'response':205,'msg':'User doesnot exist'})   
+
 @api.route('/forgotpassword/<string:username>',methods = ['GET','POST'])
 def forgotpassword(username):
+    users_collection = db.users
     if request.method == 'GET':
-        conn,cursor = db_connect()
-        cursor.execute("SELECT SecurityQuestion from USERS where username = %s OR userid = %s",(username,username))
-        data = cursor.fetchall()
-        cursor.close()
+        data = users_collection.find_one({"Username":username})
         if data:
             result = {}
-            for row in data:
-                result['SecurityQuestion'] = row['SecurityQuestion']
+            result['SecurityQuestion'] = data['SecurityQuestion']
             result['username'] = username
             result['response'] = 200
-            conn.close()
             return result
         else:
-            conn.close()
             return jsonify({'response':205,'username':username,'msg':'User not exists'})
     elif request.method == 'POST':
         question = request.json['question']
         answer = request.json['answer']
-        conn,cursor = db_connect()
-        cursor.execute("SELECT * from USERS where username = %s OR userid = %s",(username,username))
-        data = cursor.fetchall()
-        if data:
-            cursor.execute("SELECT * from USERS where (username = %s OR userid = %s) and SecurityQuestion =%s and Answer=%s",(username,username,question,answer))
-            data = cursor.fetchall()
+        # conn,cursor = db_connect()
+        # cursor.execute("SELECT * from USERS where username = %s OR userid = %s",(username,username))
+        # data = cursor.fetchall()
+        user_available = users_collection.find_one({"Username":username})
+        if user_available:
+            data = users_collection.find_one({"Username":username, "SecurityQuestion":question, "Answer":answer})
+            # cursor.execute("SELECT * from USERS where (username = %s OR userid = %s) and SecurityQuestion =%s and Answer=%s",(username,username,question,answer))
+            # data = cursor.fetchall()
             if data:
-                conn.close()
+                # conn.close()
                 return jsonify({'response':200,'msg':'Answer is correct'})  
             else:
-                conn.close()
+                # conn.close()
                 return jsonify({'response':205,'msg':'Answer is incorrect'})
         else:
-            conn.close()
-            return jsonify({'response':205,'msg':'User doesnot exist'})    
+            # conn.close()
+            return jsonify({'response':205,'msg':'User doesnot exist'})
 
 
 @api.route('/updatepassword/<string:username>',methods=['POST'])
 def update_password(username):
     try:
         if request.method == 'POST':
-            newpassword = request.json['newpassword']
-            conn,cursor = db_connect()
-            cursor.execute("SELECT * from USERS where username = %s OR userid = %s",(username,username))
-            data = cursor.fetchall()
+            newpassword = str(request.json['newpassword'])
+            users_collection = db.users
+            data = users_collection.find_one({"Username":username})
             if data:
-                cursor.execute("SELECT * from USERS where (username = %s OR userid = %s) AND password = %s",(username,username, newpassword))
-                data = cursor.fetchall()
-                print(data)
-                if data:
-                    cursor.close()
-                    conn.close()
+                userIdPassword = db.users.find_one({ "Username": username, "Password": newpassword })
+                if userIdPassword:
                     return jsonify({'response':205,'msg':"You are changing it with the same password"})
                 else:
-                    cursor.execute("UPDATE USERS set password = %s where username = %s OR userid = %s",(newpassword, username, username))
-                    cursor.close()
-                    conn.close()
+                    users_collection.update_one({ "Username": username }, { "$set": { "Password": newpassword } })
                     return jsonify({'response':200,'username':username,'msg':'Password updated successfully.'})
             else:
-                conn.close()
                 return jsonify({'response':205,'username':username,'msg':'User not exists'})
     except Exception as e:
         return jsonify(e)
@@ -292,66 +317,78 @@ def update_password(username):
 def index():
     return send_email("Welcome to Nile Delivery Service",'harishanker.kande@gmail.com','Welcome!')
 
+#####TO BE TESTED ON UI
 @api.route('/searchEmployees',methods=["GET"])
 def searchEmployees():
     try:
-        conn,cursor = db_connect()
-        cursor.execute("SELECT * from Employees")
-        data = cursor.fetchall()
+        employees_data = db.employees
+        data = json_util.dumps(employees_data.find())
         if data:
-            conn.close()
-            return jsonify(data),200
+            return data,200
         else:
-            conn.close()
             return jsonify({'message':"No Employees"}),205
     except Exception as e:
         print(e)
-        
+
+#####TO BE TESTED ON UI    
 @api.route('/availableDrivers',methods=["GET"])
 def availableDrivers():
     try:
-        conn,cursor = db_connect()
-        cursor.execute("SELECT * from Employees where available=%s and role='Driver'",("Yes"))
-        data = cursor.fetchall()
+        # conn,cursor = db_connect()
+        data = db.employees.find({"$or":[{"Available":"Yes"},{"Role":"Driver"}]})
+        data = json_util.dumps(data)
+        # cursor.execute("SELECT * from Employees where available=%s and role='Driver'",("Yes"))
+        # data = cursor.fetchall()
         if(data):
-            conn.close()
-            return jsonify(data),200
+            # conn.close()
+            return data,200
         else:
-            conn.close()
+            # conn.close()
             return jsonify({'message':'No availabe drivers'}),206
     except Exception as e:
         print(e)
         
-        
+#####test on UI     
 @api.route('/getAllOrders',methods=["GET"])
 def getAllOrders():
     try:
-        conn,cursor = db_connect()
-        cursor.execute("Select * from ORDERS WHERE DeliveryDriver is NULL")
-        data = cursor.fetchall()
+        # conn,cursor = db_connect()
+        orders_data = db.orders
+        data = orders_data.find({"DeliveryDriver":"Null"})
+        data = json_util.dumps(data)
+        # cursor.execute("Select * from ORDERS WHERE DeliveryDriver is NULL")
+        # data = cursor.fetchall()
         if(data):
-            conn.close()
-            return jsonify(data),200
+            # conn.close()
+            return data,200
         else:
-            conn.close()
+            # conn.close()
             return jsonify({'message':'No orders'}),207
     except Exception as e:
         print(e)
-        
+       
+       
 @api.route('/assignDriver',methods=["POST"])
 def assignDriver():
     try:
-        print(request.json)
-        conn,cursor = db_connect()
-        cursor.execute("Select * from Orders WHERE OrderId=%s",(request.json['OrderId']))
-        data = cursor.fetchall()
-        print(data)
+        orders_data = db.orders
+        # print(request.json)
+        # conn,cursor = db_connect()
+        orderid = request.json['OrderId']
+        data = orders_data.find_one({"OrderId":orderid})
+        # cursor.execute("Select * from Orders WHERE OrderId=%s",(request.json['OrderId']))
+        # data = cursor.fetchall()
+        print("PRINT DATA",data)
         if(data):
-            cursor.execute("Update Orders SET DeliveryDriver=%s, Status=%s WHERE OrderId=%s",(request.json['drivername'],"In-Progress",request.json['OrderId']))
-            conn.close()
+            drivername = request.json['drivername']
+            print("DRIVER NAME",drivername)
+            orderid = request.json['OrderId']
+            db.orders.update_one({ "OrderId": orderid },{ "$set": { "DeliveryDriver": drivername, "Status": "In Transit" }})
+            # cursor.execute("Update Orders SET DeliveryDriver=%s, Status=%s WHERE OrderId=%s",(request.json['drivername'],"In-Progress",request.json['OrderId']))
+            # conn.close()
             return jsonify({"message":"Updated Successsfully"}),200
         else:
-            conn.close()
+            # conn.close()
             return jsonify({'message':'Failed'}),208
     except Exception as e:
         print(e)
@@ -359,15 +396,32 @@ def assignDriver():
 @api.route('/getAssignedOrders/<string:driveremail>',methods=["GET"])
 def getAssignedOrders(driveremail):
     try:
-        conn,cursor = db_connect()
+        # conn,cursor = db_connect()
         print(driveremail)
-        cursor.execute("select * from Orders o, Employees e WHERE o.DeliveryDriver=e.FullName and email=%s and Status IN('In-Progress','Picked-Up')",(driveremail))
-        data = cursor.fetchall()
+        query = [
+            {
+                '$lookup': {
+                    'from': 'employees',
+                    'localField': 'DeliveryDriver',
+                    'foreignField': 'FullName',
+                    'as': 'driver'
+                }
+            },
+            {
+                '$unwind': '$driver'
+            },
+            {
+                '$match': {
+                    'Status': { '$in': ['Delivered'] },
+                    'driver.Email': driveremail
+                }
+            }
+        ]
+        result = db.orders.aggregate(query)
+        data = json_util.dumps(result)
         if(data):
-            conn.close()
-            return jsonify(data),200
+            return data,200
         else:
-            conn.close()
             return jsonify({'message':'No orders'}),205
     except Exception as e:
         print(e)
@@ -387,12 +441,14 @@ def getAdminDetails():
 @api.route('/deleteAdmin', methods = ['POST'])
 def deleteAdmin():
     try:
+        users_data = db.users
         if request.method == 'POST':
             username = request.json['username']
-            conn,cursor = db_connect()
-            cursor.execute("DELETE FROM USERS where username = %s and role = %s",(username,'admin'))
-            cursor.close()
-            conn.close()
+            query = {
+                'Username': username,
+                'Role': 'admin'
+            }
+            users_data.delete_one(query)
             return jsonify({'msg':'Delete successful'})
     except Exception as e:
         print(e)
@@ -499,9 +555,9 @@ def updateServicePrice():
     except Exception as e:
         print(e)
 
-@api.route('/getLatLon')
-def getLatLon():
-    return lat_lon('3435 N Western Ave, Chicago, IL 60618')
+# @api.route('/getLatLon')
+# def getLatLon():
+#     return lat_lon('3435 N Western Ave, Chicago, IL 60618')
 
 @api.route('/getDeliveredOrders')
 def getDeliveredOrders():

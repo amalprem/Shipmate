@@ -202,9 +202,11 @@ const ForgotPassword = () => {
                                 name="questions"
                                 onChange={handleQuestionChange}
                             >
-                                <MenuItem value={'What was the name of your high school?'}>What was the name of your high school?</MenuItem>
-                                <MenuItem value={'What city were you born in?'}>What city were you born in?</MenuItem>
-                                <MenuItem value={'What street did you live on in third grade?'}>What street did you live on in third grade?</MenuItem>
+                                <MenuItem value={"What is your mother's maiden name?"}>What is your mother's maiden name?</MenuItem>
+                                <MenuItem value={"What was your first pet's name?"}>What was your first pet's name?</MenuItem>
+                                <MenuItem value={"Where were you born?"}>Where were you born?</MenuItem>
+                                <MenuItem value={"What is your favorite color?"}>What is your favorite color?</MenuItem>
+                                <MenuItem value={"What was your high school mascot?"}>What was your high school mascot?</MenuItem>
                             </Select>
                         }
 

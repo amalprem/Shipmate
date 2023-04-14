@@ -45,19 +45,19 @@ const SignIn = () => {
     window.localStorage.removeItem("isLoggedIn");
   }
 
-  useEffect(() => {
-    google.accounts.id.initialize({
-      client_id:
-        "324311124286-g39mk6mka2n74f8rgi3uu2c0njm4h13o.apps.googleusercontent.com",
-      callback: handleCallbackResponse,
-    });
+  // useEffect(() => {
+  //   google.accounts.id.initialize({
+  //     client_id:
+  //       "324311124286-g39mk6mka2n74f8rgi3uu2c0njm4h13o.apps.googleusercontent.com",
+  //     callback: handleCallbackResponse,
+  //   });
 
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large",
-    });
-    google.accounts.id.prompt();
-  }, []);
+  //   google.accounts.id.renderButton(document.getElementById("signInDiv"), {
+  //     theme: "outline",
+  //     size: "large",
+  //   });
+  //   google.accounts.id.prompt();
+  // }, []);
 
   useEffect(() => {
     const data = window.localStorage.getItem("isLoggedIn");
