@@ -10,7 +10,7 @@ from flaskext.mysql import MySQL
 from datetime import datetime
 from flask_cors import CORS
 from pymysql.cursors import DictCursor
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os,smtplib
 import random as rd
 import geopy.geocoders
@@ -22,7 +22,7 @@ from faker import Faker
 from pymongo import MongoClient
 from bson import json_util
 
-load_dotenv()
+# load_dotenv()
 api = Flask(__name__)
 cors = CORS(api)
 mysql = MySQL(cursorclass=DictCursor)
@@ -424,6 +424,7 @@ def getAssignedOrders(driveremail):
     except Exception as e:
         print(e)
 
+##skipped
 @api.route('/getAdminDetails',methods = ['GET','POST'])
 def getAdminDetails():
     try:
@@ -465,41 +466,49 @@ def verifyAdmin():
     except Exception as e:
         print(e)
 
-
+#changed
 @api.route("/updateUserProfile/<string:username>",methods=["GET","POST"])
 def updateUserProfile(username):
-    # print(request.method)
+    print(request.method)
     if request.method == 'GET':
-        conn,cursor = db_connect()
-        # print(username)
-        cursor.execute("SELECT * FROM USERS where username = %s",(username))
-        data = cursor.fetchall()
+        users_data = db.users
+        # conn,cursor = db_connect()
+        print("Username:   ---  ", username)
+        # cursor.execute("SELECT * FROM USERS where username = %s",(username))
+        # data = cursor.fetchall()
+        data = users_data.find_one({"Username": username})
+        print("DATA:  ", data, len(data))
         if data:
-            conn.close()
+            # conn.close()
             if len(data)==1:
+                print("1111111111111111111111111111111", data)
                 data = data.pop()
-            return jsonify({'user':data}),200
+            print("HERE")
+            data['_id'] = str(data['_id'])
+            return jsonify({'User':data}),200
         else:
-            conn.close()
+            # conn.close()
             return jsonify({'response':205,'username':username,'msg':'User not exists'})
     elif request.method == "POST":
-        # print("here in post")
-        # print(request.json)
-        conn,cursor = db_connect()
-        cursor.execute("SELECT * FROM USERS where username = %s",(username))
-        data = cursor.fetchall()
-        # print(data)
+        print("here in post")
+        print(request.json)
+        users_data = db.users
+        data = users_data.find_one({"Username": username})
+        # data = cursor.fetchall()
+        print("DATA--------",data)
         if data:
             if request.json['password'] is None:
-                cursor.execute("UPDATE USERS set FirstName = %s, LastName = %s, Username =%s,ProfilePic=%s where username=%s",(request.json['firstname'],request.json['lastname'],request.json['email'],request.json['profilepic'],username))
-                conn.close()
+                # cursor.execute("UPDATE USERS set FirstName = %s, LastName = %s, Username =%s,ProfilePic=%s where username=%s",(request.json['firstname'],request.json['lastname'],request.json['email'],request.json['profilepic'],username))
+                # conn.close()
+                users_data.update_one({"Username": username}, {"$set": {"FirstName": request.json['firstname'], "LastName": request.json['lastname'], "Username": request.json['email'], "ProfilePic": request.json['profilepic']}})
                 return jsonify({"message":"Update Successful"}),200
             else:
-                cursor.execute("UPDATE USERS set FirstName = %s, LastName = %s, Username =%s,Password=%s,ProfilePic=%s where username=%s",(request.json['firstname'],request.json['lastname'],request.json['email'],request.json['password'],request.json['profilepic'],username));
-                conn.close()
+                # cursor.execute("UPDATE USERS set FirstName = %s, LastName = %s, Username =%s,Password=%s,ProfilePic=%s where username=%s",(request.json['firstname'],request.json['lastname'],request.json['email'],request.json['password'],request.json['profilepic'],username));
+                # conn.close()
+                users_data.update_one({"Username": username}, {"$set": {"FirstName": request.json['firstname'], "LastName": request.json['lastname'], "Username": request.json['email'], "Password": request.json['password'], "ProfilePic": request.json['profilepic']}})
                 return jsonify({"message":"Update Successful"}),200
         else:
-            conn.close()
+            # conn.close()
             return jsonify({'response':205,'username':username,'message':'User not exists'})
         
 @api.route('/addService',methods=["POST"])
@@ -571,34 +580,38 @@ def updateServicePrice():
 # def getLatLon():
 #     return lat_lon('3435 N Western Ave, Chicago, IL 60618')
 
+#changed
 @api.route('/getDeliveredOrders')
 def getDeliveredOrders():
     try:
-        conn,cursor = db_connect()
-        cursor.execute("SELECT * FROM ORDERS")
-        data = cursor.fetchall()
+        orders = db.orders
+        # conn,cursor = db_connect()
+        # cursor.execute("SELECT * FROM ORDERS")
+        data = orders.find()
         if data:
-            conn.close()
-            return data,200
+            # conn.close()
+            return json_util.dumps(data),200
         else:
-            conn.close()
+            # conn.close()
             return jsonify({'message':'No delivered Orders'}),205
     except Exception as e:
         print(e)
 
+#changed
 @api.route('/deleteServices',methods=["POST"])
 def deleteServices():
     try:
         if request.method == "POST":
+            delivery = db.deliveryservices
             print(request.json["serviceName"])
-            conn,cursor = db_connect()
-            cursor.execute("DELETE FROM Deliveryservices where Servicename = %s",(request.json["serviceName"]))
-            data = cursor.fetchall()
+            # conn,cursor = db_connect()
+            # cursor.execute("DELETE FROM Deliveryservices where Servicename = %s",(request.json["serviceName"]))
+            data = delivery.delete_one({"ServiceName": request.json["serviceName"]})
             if data:
-                conn.close()
+                # conn.close()
                 return jsonify({"message":"Service Deleted"}),200
             else:
-                conn.close()
+                # conn.close()
                 return jsonify({"message":"No Service found"}),205
     except Exception as e:
         print(e)
@@ -625,25 +638,44 @@ def pickUp():
                 return jsonify({"message":"Failed to change status"}),206
     except Exception as e:
         print(e)
-        
+
+#changed 
 @api.route('/deliver', methods=["POST"])
 def deliver():
     try:
         if request.method=="POST":
-            conn,cursor = db_connect()
-            cursor.execute("Select Status from Orders where OrderId=%s",(request.json["OrderId"]))
-            data = cursor.fetchall()
-            if data:
-                cursor.execute("Update Orders SET Status = 'Delivered',DeliveryHours = %s where OrderId=%s",(request.json["DeliveryHours"],request.json["OrderId"]))
+            orders = db.orders
+            query = {"OrderId": request.json["OrderId"]}
+            projection = {"Status": 1, "_id": 0}
+            result = orders.find_one(query, projection)
+            status = result["Status"]
+            print("RESULT: ", result)
+            print("STATUS", status)
+            # conn,cursor = db_connect()
+            # cursor.execute("Select Status from Orders where OrderId=%s",(request.json["OrderId"]))
+            # data = cursor.fetchall()
+            if status:
+                print("in status")
+                query = {"OrderId": request.json["OrderId"]}
+                print('1')
+                update = {"$set": {"Status": "Delivered", "DeliveryHours": request.json["DeliveryHours"]}}
+                print('2')
+                orders.update_one(query, update)
+                print('3')
+                # cursor.execute("Update Orders SET Status = 'Delivered',DeliveryHours = %s where OrderId=%s",(request.json["DeliveryHours"],request.json["OrderId"]))
                 message = "Dear"+request.json['SenderName']+" your order is delivered"
-                send_email(message,request.json['SenderEmail'],"Order Delivered")
-                conn.close()
+                print('4')
+                # send_email(message,request.json['SenderEmail'],"Order Delivered")
+                print('5')
+
+                # conn.close()
                 return jsonify({"message":"Status changed to Delivered"}),200
             else:
-                conn.close()
+                # conn.close()
                 return jsonify({"message":"Failed to change status"}),206
     except Exception as e:
-        print(e)
+        print("Exception details",e)
+        return jsonify({"message": "An error occurred"}), 500
         
 @api.route('/payment',methods=["POST"])
 def payment():
