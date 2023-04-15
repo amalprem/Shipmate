@@ -18,7 +18,6 @@ from geopy.geocoders import Nominatim
 import certifi
 import ssl
 import string
-from faker import Faker
 from pymongo import MongoClient
 from bson import json_util
 
@@ -318,6 +317,7 @@ def update_password(username):
 def index():
     return send_email("Welcome to Nile Delivery Service",'harishanker.kande@gmail.com','Welcome!')
 
+#####TO BE TESTED ON UI
 @api.route('/searchEmployees',methods=["GET"])
 def searchEmployees():
     try:
@@ -329,12 +329,13 @@ def searchEmployees():
             return jsonify({'message':"No Employees"}),205
     except Exception as e:
         print(e)
-  
+
+#####TO BE TESTED ON UI    
 @api.route('/availableDrivers',methods=["GET"])
 def availableDrivers():
     try:
         # conn,cursor = db_connect()
-        data = db.employees.find({"Available":"Yes","Role":"driver"})
+        data = db.employees.find({"$or":[{"Available":"Yes"},{"Role":"Driver"}]})
         data = json_util.dumps(data)
         # cursor.execute("SELECT * from Employees where available=%s and role='Driver'",("Yes"))
         # data = cursor.fetchall()
@@ -346,7 +347,8 @@ def availableDrivers():
             return jsonify({'message':'No availabe drivers'}),206
     except Exception as e:
         print(e)
-         
+        
+#####test on UI     
 @api.route('/getAllOrders',methods=["GET"])
 def getAllOrders():
     try:
@@ -410,7 +412,7 @@ def getAssignedOrders(driveremail):
             },
             {
                 '$match': {
-                    'Status': { '$in': ['In Transit'] },
+                    'Status': { '$in': ['Delivered'] },
                     'driver.Email': driveremail
                 }
             }
@@ -505,21 +507,15 @@ def updateUserProfile(username):
 @api.route('/addService',methods=["POST"])
 def addService():
     try:
-        # conn,cursor = db_connect()
-        delivery_service_data = db.deliveryservices
-        serviceName = request.json["name"]
-        data = delivery_service_data.find_one({"ServiceName":serviceName})
-        # cursor.execute("SELECT * from Deliveryservices where ServiceName = %s",(request.json["name"]))
-        # data = cursor.fetchall()
+        conn,cursor = db_connect()
+        cursor.execute("SELECT * from Deliveryservices where ServiceName = %s",(request.json["name"]))
+        data = cursor.fetchall()
         if data:
-            print("IN IF")
+            conn.close()
             return jsonify({"message":"Service already in database"}),205
         else:
-            print("IN ELSE")
-            delivery_service_data.insert_one({"ServiceName":request.json["name"],"Price":request.json["price"], "Duration":request.json["duration"],
-                                              "Description":request.json["description"],"Picture":request.json["picture"]})
-            # cursor.execute("INSERT INTO Deliveryservices Values(%s,%s,%s,%s,%s)",(request.json["name"],request.json["price"],request.json["duration"],request.json["description"],request.json["picture"]))
-            # conn.close()
+            cursor.execute("INSERT INTO Deliveryservices Values(%s,%s,%s,%s,%s)",(request.json["name"],request.json["price"],request.json["duration"],request.json["description"],request.json["picture"]))
+            conn.close()
             return jsonify({"message":"Service Added."}),200
     except Exception as e:
         print(e)
@@ -527,17 +523,15 @@ def addService():
 @api.route('/getServices',methods=["GET"])
 def getServices():
     try:
-        delivery_service_data = db.deliveryservices
         if request.method == 'GET':
-            # conn,cursor = db_connect()
-            # cursor.execute("SELECT * from Deliveryservices")
-            # data = cursor.fetchall()
-            data = delivery_service_data.find()
+            conn,cursor = db_connect()
+            cursor.execute("SELECT * from Deliveryservices")
+            data = cursor.fetchall()
             if data:
-                # conn.close()
-                return json_util.dumps(data),200
+                conn.close()
+                return data,200
             else:
-                # conn.close()
+                conn.close()
                 return jsonify({"message":"No Services Found"}),205
     except Exception as e:
         print(e)
@@ -545,24 +539,18 @@ def getServices():
 @api.route('/updateServicePrice',methods=["POST"])
 def updateServicePrice():
     try:
-        delivery_service_data = db.deliveryservices
         if request.method == 'POST':
-            # conn,cursor = db_connect()
-            # cursor.execute("SELECT * FROM Deliveryservices where Servicename = %s",(request.json["name"]))
-            # data = cursor.fetchall()
-            data = delivery_service_data.find({"ServiceName":request.json["name"]})
-            print("DATA IS",data)
+            conn,cursor = db_connect()
+            cursor.execute("SELECT * FROM Deliveryservices where Servicename = %s",(request.json["name"]))
+            data = cursor.fetchall()
             if data:
-                # db.orders.update_one({ "OrderId": orderid },{ "$set": { "DeliveryDriver": drivername, "Status": "In Transit" }})
-                delivery_service_data.update_one({"ServiceName":request.json["name"]},{"$set":{"Price":request.json["price"],"ServiceName":request.json["name"]}})
-                # cursor.execute("UPDATE Deliveryservices set Price=%s where ServiceName = %s",(request.json['price'],request.json["name"]))
-                # cursor.execute("SELECT * from Deliveryservices")
-                data = delivery_service_data.find({"ServiceName":request.json["name"]})
-                # data = cursor.fetchall()
-                # conn.close()
-                return json_util.dumps(data),200
+                cursor.execute("UPDATE Deliveryservices set Price=%s where ServiceName = %s",(request.json['price'],request.json["name"]))
+                cursor.execute("SELECT * from Deliveryservices")
+                data = cursor.fetchall()
+                conn.close()
+                return data,200
             else:
-                # conn.close()
+                conn.close()
                 return jsonify({"message":"Delivery Service not found"}),205
     except Exception as e:
         print(e)
@@ -606,22 +594,20 @@ def deleteServices():
 @api.route('/pickUp', methods=["POST"])
 def pickUp():
     try:
-        orders_data = db.orders
         if request.method=="POST":
-            # print(request.json)
-            # conn,cursor = db_connect()
-            data = orders_data.find({"OrderId":request.json["OrderId"]})
-            # cursor.execute("Select Status from Orders where OrderId=%s",(request.json["OrderId"]))
-            # data = cursor.fetchall()
+            print("Inside post method")
+            print(request.json)
+            conn,cursor = db_connect()
+            cursor.execute("Select Status from Orders where OrderId=%s",(request.json["OrderId"]))
+            data = cursor.fetchall()
             if data:
-                orders_data.update_one({"OrderId":request.json["OrderId"]},{"$set":{"Status":"In Transit"}})
-                # cursor.execute("Update Orders SET Status = 'Picked-Up' where OrderId=%s",(request.json["OrderId"]))
-                # print("data")
-                # conn.close()
-                return jsonify({"message":"Status changed to In Transit"}),200
+                cursor.execute("Update Orders SET Status = 'Picked-Up' where OrderId=%s",(request.json["OrderId"]))
+                print("data")
+                conn.close()
+                return jsonify({"message":"Status changed to Picked Up"}),200
             else:
                 print("else")
-                # conn.close()
+                conn.close()
                 return jsonify({"message":"Failed to change status"}),206
     except Exception as e:
         print(e)
@@ -669,41 +655,33 @@ def payment():
 @api.route('/shipmentCreation',methods=["POST"])
 def shipmentCreation():
     try:
-        orders_data = db.orders
         if request.method == "POST":
-            # print(request.json)
-            fake= Faker()
-            trackingId = generate_trackingId()
-            while True:
-                new_order_id = fake.uuid4()
-                if db.orders.find_one({"OrderId": new_order_id}) is None:
-                    break
-            print("NEEW ORDER ID IS",new_order_id)
-            orders_data.insert_one({
-                    "OrderId":new_order_id,
-                    "OrderPlacedDate":request.json["OrderPlacedDate"],
-                    "SenderName":request.json["SenderName"],
-                    "SenderEmail":request.json["SenderEmail"],
-                    "PickUpAddress":request.json["PickUpAddress"],
-                    "SenderMobile": request.json["SenderMobile"],
-                    "RecieverName": request.json["RecieverName"],
-                    "RecieverEmail": request.json["RecieverEmail"],
-                    "DestinationAddress": request.json["DestinationAddress"],
-                    "RecieverMobile": request.json["RecieverMobile"],
-                    "Weight": request.json["Weight"],
-                    "Length":request.json["Length"],
-                    "Width": request.json["Width"],
-                    "Height": request.json["Height"],
-                    "EstimatedDeliveryDate": request.json["EstimatedDeliveryDate"],
-                    "ServiceType": request.json["ServiceType"],
-                    "Price": request.json["Price"],
-                    "TrackingId": trackingId,
-                    "Status": request.json["Status"]
-                }
-            )
+            print(request.json)
+            trackingId = generate_trackingId();
+            conn,cursor = db_connect()
+            cursor.execute("INSERT INTO ORDERS (OrderPlacedDate,SenderName,SenderEmail,PickUpAddress,SenderMobile,RecieverName,RecieverEmail,DestinationAddress,RecieverMobile,Weight,Length,Width,Height,EstimatedDeliveryDate,ServiceType,Price,TrackingId,Status) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                str(datetime.now()),
+                request.json["SenderName"],
+                request.json["SenderEmail"],
+                request.json["PickUpAddress"],
+                request.json["SenderMobile"],
+                request.json["RecieverName"],
+                request.json["RecieverEmail"],
+                request.json["DestinationAddress"],
+                request.json["RecieverMobile"],
+                request.json["Weight"],
+                request.json["Length"],
+                request.json["Width"],
+                request.json["Height"],
+                request.json["EstimatedDeliveryDate"],
+                request.json["ServiceType"],
+                request.json["Price"],
+                trackingId,
+                request.json["Status"]
+            )) 
             message = "<p>"+"Dear "+request.json['SenderName']+","+"<br><br>"+"Thank you for creating the order shipment.Your order will be delivered on <b>"+request.json["EstimatedDeliveryDate"]+"</b></p> <br />"+"<p> You can track your order using this TrackingId:<b>"+trackingId+"</b></p>"
             send_email(message,request.json["SenderEmail"],"Order Creation Successful!")
-            # conn.close()
+            conn.close()
             return jsonify({"message":"Order creation successfull"}),200
     except Exception as e:
         print(e)
@@ -832,20 +810,17 @@ def startMessage():
 @api.route('/submitReviewRating',methods=["POST"])
 def submitReviewRating():
     try:
-        orders_data = db.orders
         if request.method == "POST":
-            # print(request.json)
-            # conn,cursor = db_connect()
-            # cursor.execute("SELECT * FROM Orders where OrderId = %s",(request.json["orderid"]))
-            # data = cursor.fetchall()
-            data = orders_data.find({"OrderId":request.json["orderid"]})
+            print(request.json)
+            conn,cursor = db_connect()
+            cursor.execute("SELECT * FROM Orders where OrderId = %s",(request.json["orderid"]))
+            data = cursor.fetchall()
             if data:
-                orders_data.update_one({"OrderId":request.json["orderid"]},{"$set":{"Rating":request.json["rating"], "Review":request.json["review"]}})
-                # cursor.execute("UPDATE Orders set Rating=%s, Review=%s where OrderId = %s",(request.json["rating"],request.json["review"],request.json["orderid"]))
-                # conn.close()
+                cursor.execute("UPDATE Orders set Rating=%s, Review=%s where OrderId = %s",(request.json["rating"],request.json["review"],request.json["orderid"]))
+                conn.close()
                 return jsonify({"message":"Reviews and ratings updated for the order"}),200
             else:
-                # conn.close()
+                conn.close()
                 return jsonify({"message":"No shipment in the database."}),205
     except Exception as e:
         print(e)
@@ -856,7 +831,7 @@ def getStoreLocations():
     try:
         if request.method == "GET":
             conn,cursor = db_connect()
-            cursor.execute("SELECT * FROM StoresLocation")
+            cursor.execute("SELECT * FROM StoresLocation");
             data = cursor.fetchall()
             if data:
                 conn.close()
@@ -871,17 +846,15 @@ def getStoreLocations():
 @api.route('/tracking',methods=["POST"])
 def tracking():
     try:
-        orders_data = db.orders
         if request.method == 'POST':
-            # conn,cursor = db_connect()
-            # cursor.execute("SELECT Status from Orders where TrackingId=%s",(request.json["tracking_id"]))
-            # data = cursor.fetchall()
-            data = orders_data.find_one({ "TrackingId": request.json["tracking_id"] }, { "Status": 1, "_id": 0 })
+            conn,cursor = db_connect()
+            cursor.execute("SELECT Status from Orders where TrackingId=%s",(request.json["tracking_id"]))
+            data = cursor.fetchall()
             if data:
-                # conn.close()
+                conn.close()
                 return jsonify(data),200
             else:
-                # conn.close()
+                conn.close()
                 return jsonify({"message":"Not a valid tracking id"}),205
     except Exception as e:
         print(e)
@@ -889,17 +862,15 @@ def tracking():
 @api.route('/getUserOrders/<string:username>',methods=["GET"])
 def getUserOrders(username:str):
     try:
-        orders_data = db.orders
         if request.method == "GET":
-            # conn,cursor = db_connect()
-            # cursor.execute("SELECT * FROM Orders where SenderEmail = %s",(username))
-            # data = cursor.fetchall()
-            data = orders_data.find({"SenderEmail":username})
+            conn,cursor = db_connect()
+            cursor.execute("SELECT * FROM Orders where SenderEmail = %s",(username))
+            data = cursor.fetchall()
             if data:
-                # conn.close()
-                return json_util.dumps(data),200
+                conn.close()
+                return jsonify(data),200
             else:
-                # conn.close()
+                conn.close()
                 return jsonify({"message":"No Delivered Orders"}),205
     except Exception as e:
         print(e)

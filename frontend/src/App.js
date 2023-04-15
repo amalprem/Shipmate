@@ -16,11 +16,11 @@ function App() {
 
   function getRoutes() {
     switch (localStorage.getItem("role")) {
-      case "admin":
+      case "Admin":
         return <AdminRoutes></AdminRoutes>;
-      case "driver":
+      case "Driver":
         return <DriverRoutes></DriverRoutes>;
-      case "user":
+      case "User":
         return <UserRoutes></UserRoutes>;
       default:
         return <NormalRoutes></NormalRoutes>;
