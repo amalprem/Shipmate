@@ -63,7 +63,8 @@ export default function BasicTabs() {
     );
     if (response.status === 200) {
       setTrackingButton(true);
-      let curr_status = response.data[0].Status;
+      console.log(response["data"].Status)
+      let curr_status = response["data"].Status
       setData(curr_status);
       console.log(dataz);
     } else {
@@ -96,7 +97,7 @@ export default function BasicTabs() {
       </Box>
       <div className="fontsss">
         <TabPanel value={value} index={0} style={{ textAlign: "center" }}>
-          <span style={{ textAlign: "center", display: "inherit" }}>
+          <span style={{ textAlign: "center", display: "inherit", fontSize:32}}>
             To know more about the rates click
             <Link to="/rates" href="Shipping" variant="body2">
               {" here"}

@@ -59,7 +59,7 @@ const ProgressBar = () => {
   const [num, setNum] = useState(0);
 
   const createShipment = async () => {
-    const response = await axios.post(`${url}/shipmentCreation`, {
+    const data = {
       SenderName: formData.firstnamesender + " " + formData.lastnamesender,
       SenderEmail: formData.emailsender,
       PickUpAddress:
@@ -95,13 +95,15 @@ const ProgressBar = () => {
         selectedService.DeliveryDate + " by " + selectedService.Time,
       ServiceType: selectedService.name,
       Price: selectedService.price,
-      Status: "Created",
-    });
+      Status: "In Transit",
+    }
+    const response = await axios.post(`${url}/shipmentCreation`, {data});
+    console.log("Response is",response["data"]["message"])
     if (response.status === 205) {
       alert("Please Enter all fields to create order");
     } else if (response.status === 200) {
       console.log(response);
-      alert(response.data["message"]);
+      alert(response["data"]["message"]);
       Object.keys(formData).forEach((key) => {
         formData[key] = null;
       });
@@ -110,10 +112,10 @@ const ProgressBar = () => {
   };
   const handleNext = () => {
     if (num === pages.length - 1) {
-      console.log(formData);
+      // console.log(formData);
       createShipment();
     } else {
-      console.log(formData);
+      // console.log(formData);
       setNum(num + 1);
     }
   };
@@ -128,7 +130,7 @@ const ProgressBar = () => {
           style={{ margin: 8, width: 400, paddingLeft: "10%" }}
           disabled={num == 0}
           onClick={() => {
-            console.log(formData);
+            // console.log(formData);
             setNum(num - 1);
           }}
         >
@@ -142,6 +144,7 @@ const ProgressBar = () => {
             margin: 8,
             width: 300,
             textAlign: "center",
+            backgroundColor:"#db6201"
           }}
           disabled={num == pages.length}
           onClick={() => {

@@ -5,7 +5,7 @@ const Announcements = ({ selected }) => {
     case "Announcements":
       return (
         <strong>
-          Actual hours in our all the stores might differ due to christmas
+          Actual hours in our all the stores might differ due to summer
           holidays
         </strong>
       );

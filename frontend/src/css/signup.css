@@ -3,16 +3,17 @@
   font-family: "Inter", sans-serif !important;
   font-weight: 400 !important;
   max-width: 35rem;
-  border: 2px solid #5038ee;
+  /* border: 2px solid #5038ee; */
   padding: 2rem;
   margin-left: 4rem;
+  align-self: center;
 }
 
 a,
 li {
   font-family: "Inter", sans-serif !important;
   font-weight: 400 !important;
-  font-size: 1rem !important;
+  font-size: 1rem;
   text-decoration: none !important;
 }
 
