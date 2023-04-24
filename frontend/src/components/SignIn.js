@@ -204,7 +204,7 @@ const SignIn = () => {
                       </Button>
                     </div>
                   )}
-                  <div className="google-signin">
+                  {/* <div className="google-signin">
                     You can also SignIn using Google account
                     <div id="signInDiv"></div>
                     {Object.keys(user).length != 0 && (
@@ -215,7 +215,7 @@ const SignIn = () => {
                         Sign Out
                       </button>
                     )}
-                  </div>
+                  </div> */}
                   <div className="styles">
                     <Link
                       to="/forgotPassword"

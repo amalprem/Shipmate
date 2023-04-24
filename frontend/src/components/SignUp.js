@@ -211,7 +211,7 @@ export default function SignUp() {
                 style={{ paddingBottom: "0.5rem" }}
                 required
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I agree with all the Terms and Conditions stated by Nile"
+                label="I agree with all the Terms and Conditions stated by ShipMate"
               />
             </Grid>
           </Grid>
