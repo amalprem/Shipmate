@@ -8,7 +8,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const AddServices = () => {
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
   const [picture, setPicture] = useState(null);
   const [serviceName, setServiceName] = useState(null);
   const [price, setPrice] = useState(null);

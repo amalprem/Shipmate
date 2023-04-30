@@ -39,7 +39,7 @@ export default function Shipping({ formData, setFormData }) {
       statereceiver: data.get("State2"),
     });
     axios
-      .post("http://localhost:5000/shipmentCreation", {
+      .post("https://shipmate-backend.onrender.com/shipmentCreation", {
         emailsender: data.get("email1"),
         countrysender: data.get("country1"),
         firstnamesender: data.get("firstName1"),

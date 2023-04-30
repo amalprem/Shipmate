@@ -14,7 +14,7 @@ const AdminApproveRequest = () => {
     fetchdata();
   }, []);
   const fetchdata = async () => {
-    const response = await axios.get("http://localhost:5000/getAdminDetails");
+    const response = await axios.get("https://shipmate-backend.onrender.com/getAdminDetails");
     //console.log(response.data.result);
     if (response.status === 200) {
       setData(response.data["result"]);
@@ -51,7 +51,7 @@ const AdminApproveRequest = () => {
                   startIcon={<DeleteIcon />}
                   onClick={() => {
                     axios
-                      .post("http://localhost:5000/deleteAdmin", {
+                      .post("https://shipmate-backend.onrender.com/deleteAdmin", {
                         username: data[obj].username,
                       })
                       .then((response) => {
@@ -72,7 +72,7 @@ const AdminApproveRequest = () => {
                   startIcon={<VerifiedIcon />}
                   onClick={() => {
                     axios
-                      .post("http://localhost:5000/verifyAdmin", {
+                      .post("https://shipmate-backend.onrender.com/verifyAdmin", {
                         username: data[obj].username,
                       })
                       .then((response) => {

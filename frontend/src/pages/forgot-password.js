@@ -31,7 +31,7 @@ const ForgotPassword = () => {
             username: data.get("username"),
         });
         axios
-            .get(`http://localhost:5000/forgotpassword/${data.get("username")}`)
+            .get(`https://shipmate-backend.onrender.com/forgotpassword/${data.get("username")}`)
             .then((response) => {
                 if (response.data['response'] === 200) {
                     setResponsedata(response.data);
@@ -51,7 +51,7 @@ const ForgotPassword = () => {
             answer: data.get("securityAnswer")
         });
         axios
-            .post(`http://localhost:5000/forgotpassword/${data.get("username")}`, {
+            .post(`https://shipmate-backend.onrender.com/forgotpassword/${data.get("username")}`, {
                 question: data.get("questions"),
                 answer: data.get("securityAnswer")
             })
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
             reenterpassword : data.get('reenterpassword')
         })
         axios
-            .post(`http://localhost:5000/updatepassword/${useremail}`, {
+            .post(`https://shipmate-backend.onrender.com/updatepassword/${useremail}`, {
                 newpassword:data.get('password')
             })
             .then((response) => {

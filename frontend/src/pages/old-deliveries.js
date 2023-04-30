@@ -7,7 +7,7 @@ import "../css/Modal.css";
 import "../css/old-delivers.css";
 
 const OldDeliveries = () => {
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
   const [orders, setOrders] = useState([]);
   const fetchOrders = async () => {
     const response = await axios.get(`${url}/getDeliveredOrders`);

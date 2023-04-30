@@ -64,7 +64,7 @@ const CardDisplay = ({ data }) => {
 
 const OrderCard = () => {
   const [orders, setOrders] = React.useState({});
-  const url = "http://localhost:5000/";
+  const url = "https://shipmate-backend.onrender.com/";
 
   const fetchAllOrders = async () => {
     const allOrders = await axios.get(`${url}/getAllOrders`);

@@ -9,7 +9,7 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState(null);
   const [name, setName] = useState("hkande");
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
   const username = "hkande";
 
   const handleChange = (e) => {

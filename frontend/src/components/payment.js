@@ -24,7 +24,7 @@ const Payment = () => {
   const getDetails = async (formData) => {
     console.log(formData);
     const response = await axios.post(
-      "http://localhost:5000/payment",
+      "https://shipmate-backend.onrender.com/payment",
       formData
     );
     if (response.status === 200) {

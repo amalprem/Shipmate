@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 
 const Locations = () => {
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
   const [selecteddiv, setSelecteddiv] = useState({});
   const [zipcode, setZipcode] = useState(null);
   const [data, setData] = useState([]);

@@ -10,7 +10,7 @@ export default function Modal() {
   const [modal, setModal] = useState(false);
   const [data, setData] = useState([]);
   const [selecteddiv, setSelecteddiv] = useState({});
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
 
   const toggleModal = () => {
     setModal(!modal);

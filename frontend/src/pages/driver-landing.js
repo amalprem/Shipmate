@@ -6,7 +6,7 @@ import "../css/driver-landing.css";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const OrdersFunction = ({ orderData }) => {
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
   const [hours, setHours] = useState(0);
   const pickedUp = async () => {
     const pick = await axios.post(`${url}/pickUp`, {
@@ -118,7 +118,7 @@ const DriverLanding = () => {
   }, []);
 
   const [assignedOrders, setAssignedOrders] = React.useState({});
-  const url = "http://localhost:5000/";
+  const url = "https://shipmate-backend.onrender.com/";
 
   const fetchAssignedOrders = async () => {
     const email = window.localStorage.getItem("email");

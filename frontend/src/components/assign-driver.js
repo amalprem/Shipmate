@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const AssignDriver = ({ data }) => {
   // console.log("Assigned driver data is",data)
   const [drivers, setDrivers] = useState("");
-  const url = "http://localhost:5000/";
+  const url = "https://shipmate-backend.onrender.com/";
 
   const fetchDrivers = async () => {
     const availableDrivers = await axios.get(`${url}/availableDrivers`);

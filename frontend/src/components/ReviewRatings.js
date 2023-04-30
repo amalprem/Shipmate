@@ -32,7 +32,7 @@ const ReviewRatings = ({ data, toggleModal, submittoggle }) => {
   const [hoverValue, setHoverValue] = useState(undefined);
   const [review, setReview] = useState(null);
   const stars = Array(5).fill(0);
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
 
   const handleClick = (value) => {
     setCurrentValue(value);

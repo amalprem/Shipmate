@@ -22,7 +22,7 @@ const AdminView = ({
   const options = ["Driver Chats", "User Chats"];
   // const defaultOption = options[0];
 
-  const url = "http://localhost:5000";
+  const url = "https://shipmate-backend.onrender.com";
   // const [data, setData] = useState(null);
   // // const [activeTalk, setActiveTalk] = useState(null);
   // const [dropdownvalue, setDropdownvalue] = useState(null);

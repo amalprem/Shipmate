@@ -24,7 +24,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const theme = createTheme();
-const url = "http://localhost:5000";
+const url = "https://shipmate-backend.onrender.com";
 
 const ExpandMore = styled((props) => {
   const { expand, ...other } = props;

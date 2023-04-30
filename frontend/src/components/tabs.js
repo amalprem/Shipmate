@@ -58,7 +58,7 @@ export default function BasicTabs() {
 
   const getTrackingDetails = async (formData) => {
     const response = await axios.post(
-      "http://localhost:5000/tracking",
+      "https://shipmate-backend.onrender.com/tracking",
       formData
     );
     if (response.status === 200) {
