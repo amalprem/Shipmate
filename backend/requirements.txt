@@ -12,3 +12,4 @@ Jinja2
 jsonschema
 pymongo
 python-dotenv
+faker
