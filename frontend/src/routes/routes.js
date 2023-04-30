@@ -13,7 +13,7 @@ import UserProfile from "../components/UserProfile";
 import Map from "../components/Maps";
 import AdminApproveRequest from "../pages/AdminApproveRequest";
 import Services from "../pages/modify-services";
-import Payment from "../components/Payment";
+// import Payment from "../components/Payment";
 import Chat from "../components/Chat";
 import ProgressBar from "../components/ProgressBar";
 import MyChatComponent from "../Talk/Talk";
@@ -95,7 +95,7 @@ function NormalRoutes() {
       {/* <Route exact path="/payment" element={<ProgressBar />} /> */}
       <Route exact path="/talk" element={<MyChatComponent />} />
       <Route exact path="/location" element={<Locations />} />
-      <Route exact path="/Payment" element={<Payment />}></Route>
+      {/* <Route exact path="/Payment" element={<Payment />}></Route> */}
       <Route exact path="/rates" element={<Rates />} />
       {/* <Route exact path="/Tracking" element={<GoogleLocation />}></Route> */}
     </Routes>
