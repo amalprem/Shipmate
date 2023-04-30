@@ -24,14 +24,14 @@ const Home = () => {
     <div className="container">
       <div className="nile">
         {" "}
-        Nile <br></br>The Premier Delivery Management System
+        ShipMate <br></br>The Premier Delivery Management System
       </div>
       <div className="tabs fonts">
         <BasicTabs></BasicTabs>
       </div>
-      <span style={{ textAlign: "center" }}>Manage Your Shipments By</span>
+      <span style={{ textAlign: "center", fontSize:24 }}>Manage Your Shipments By</span>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div className="manage">
+        <div className="manage" style={{fontWeight:500, fontSize:16}}>
           <div
             onClick={() => {
               navigate("/createShipment");
