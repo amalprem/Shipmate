@@ -29,8 +29,8 @@ import AdminChat from "../components/AdminChat";
 function UserRoutes() {
   return (
     <Routes>
-      <Route exact path="/" element={<Home />} />
-      <Route exact path="/landing-page" element={<UserLandingPage />} />
+      {/* <Route exact path="/" element={<Home />} /> */}
+      <Route exact path="/" element={<UserLandingPage />} />
       <Route exact path="/SignIn" element={<SignIn />} />
       <Route exact path="/SignUp" element={<SignUp />} />
       <Route exact path="/ForgotPassword" element={<ForgotPassword />} />
@@ -46,9 +46,9 @@ function UserRoutes() {
 function DriverRoutes() {
   return (
     <Routes>
-      <Route exact path="/" element={<Home />} />
+      {/* <Route exact path="/" element={<Home />} /> */}
       {/* <Route exact path="/landing-page" element={<DriverLanding />} /> */}
-      <Route exact path="/landing-page" element={<DriverHomePage />} />
+      <Route exact path="/" element={<DriverHomePage />} />
       <Route exact path="/SignIn" element={<SignIn />} />
       <Route exact path="/SignUp" element={<SignUp />} />
       <Route exact path="/userProfile" element={<UserProfile />} />
@@ -62,8 +62,8 @@ function DriverRoutes() {
 function AdminRoutes() {
   return (
     <Routes>
-      <Route exact path="/" element={<Home />} />
-      <Route exact path="/landing-page" element={<AdminLandingPage />} />
+      {/* <Route exact path="/" element={<Home />} /> */}
+      <Route exact path="/" element={<AdminLandingPage />} />
       <Route exact path="/search-employees" element={<SearchEmployees />} />
       <Route exact path="/old-deliveries" element={<OldDeliveries />} />
       <Route exact path="/assign-delivery" element={<AssignDelivery />} />
@@ -84,7 +84,7 @@ function NormalRoutes() {
   return (
     <Routes>
       <Route exact path="/" element={<Home />} />
-      <Route exact path="/landing-page" element={<Home />} />
+      {/* <Route exact path="/landing-page" element={<Home />} /> */}
       <Route exact path="/SignIn" element={<SignIn />} />
       <Route exact path="/SignUp" element={<SignUp />} />
       <Route exact path="/ForgotPassword" element={<ForgotPassword />} />

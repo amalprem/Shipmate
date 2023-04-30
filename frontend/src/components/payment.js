@@ -31,7 +31,7 @@ const Payment = () => {
       alert("Payment Successfull");
     } else {
       alert("Payment Failed");
-      navigate("/landing-page");
+      navigate("/");
     }
   };
 

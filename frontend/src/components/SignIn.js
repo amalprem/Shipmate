@@ -35,7 +35,7 @@ const SignIn = () => {
     window.localStorage.setItem("email", userData.email);
     window.localStorage.setItem("name", userData.name);
     document.getElementById("signInDiv").hidden = true;
-    navigate("/landing-page");
+    navigate("/");
     window.location.reload();
   }
 
@@ -102,7 +102,7 @@ const SignIn = () => {
           window.localStorage.setItem("email", response.data["Username"]);
           window.localStorage.setItem("id", response.data["UserId"]);
           window.localStorage.setItem("name", response.data["FirstName"]);
-          navigate("/landing-page");
+          navigate("/");
           console.log("In validate otp")
           
         } else if (response.data["response"]===207) {
