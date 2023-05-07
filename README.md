@@ -36,3 +36,6 @@ The flask application acts as a controller in our application.
 # Architecture Diagram: 
 ![image](https://user-images.githubusercontent.com/51864444/235374199-dbc5ff36-4a54-48a3-966b-f9fd925019e8.png)
 
+Deployment:
+The deployed application can be accessed through the following link:
+https://shipmate-k24m.onrender.com/
